@@ -69,9 +69,10 @@ def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_lab
     if file_plt:
         if os.path.isfile(file_plt):
             print('file already exists! Aborting.')
-        plt.savefig(fname=file_plt, dpi=150, format=format_plt)
+        else:
+            plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None):
+def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None, loc='best'):
     alpha_val = 0.2
     textheight = y_lims[1] - (y_lims[1] - y_lims[0])/20
 
@@ -84,7 +85,7 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
     plt.ylabel(y_label)
 
     plt.title(fig_title)
-    plt.legend(framealpha=0.0, fontsize=12)
+    plt.legend(framealpha=0.0, fontsize=12, loc=loc)
 
     plt.axvline(r_min, color='black', alpha=2*alpha_val)
     plt.axvline(r_max, color='black', alpha=2*alpha_val)
@@ -98,7 +99,8 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
     if file_plt:
         if os.path.isfile(file_plt):
             print('file already exists! Aborting.')
-        plt.savefig(fname=file_plt, dpi=150, format=format_plt)
+        else:
+            plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
 def select_color_from_colormap(range_indicator, colormap):
     '''
