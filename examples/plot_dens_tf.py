@@ -10,13 +10,13 @@ import os
 
 from mrmdanalysis.util import calc_coupling_potential_from_thermodynamic_force
 # %%
-path_data = plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/thermoForce_2025_03_18').resolve()
-#path_data = plb.Path('/srv/public/julianhille/project/mrmd/build/examples/TracerThermodynamicForce').resolve()
+#path_data = plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/thermoForce_2025_03_18').resolve()
+path_data = plb.Path('/srv/public/julianhille/project/mrmd/build/examples/TracerThermodynamicForce').resolve()
 
 #dens_bin = 0.15
 #file_base = 'thermoForce_2025_02_26_{0}'.format(str(dens_bin).replace(".", ""))
 
-file_base = "thermoForce_2025_03_18"
+file_base = "test"
 
 file_dens = path_data / '{0}_dens.txt'.format(file_base)
 file_tf = path_data / '{0}_tf.txt'.format(file_base)
@@ -52,20 +52,21 @@ step_size = 1
 iterations_to_plot = [i for i in range(first_step, last_step, step_size)]
 x_label = r'$x$ in $\sigma$'
 colors = [plt.cm.plasma_r((i - first_step)/(last_step - first_step)) for i in iterations_to_plot]
-
+# %%
 dens_vals_to_plot = dens_vals[iterations_to_plot]
 y_lims_dens = [np.min(dens_vals_to_plot) - 0.05, np.max(dens_vals_to_plot) + 0.05]
 y_label_dens = r'$\rho$ in $\sigma^{-3}$'
 data_labels_dens = [r'iteration = ' + str(i) for i in iterations_to_plot]
 fig_title_dens = r'dens'
-
+# %%
 tf_vals_to_plot = tf_vals[iterations_to_plot]
 y_lims_tf = [np.min(tf_vals_to_plot) - 2, np.max(tf_vals_to_plot) + 2]
 y_label_tf = r'$F_{th}$ in $\epsilon/\sigma$'
 data_labels_tf = [r'iteration = ' + str(i) for i in iterations_to_plot]
 fig_title_tf = r'thermodynamic force'
-
+# %%
 pot_vals_to_plot = [calc_coupling_potential_from_thermodynamic_force(pos_x_grid_tf, tf_vals[i], r_ref, r_min) for i in iterations_to_plot]
+# %%
 y_lims_pot = [np.min(pot_vals_to_plot) - 0.2, np.max(pot_vals_to_plot) + 0.2]
 y_label_pot = r'$\phi_{th}$ in $\epsilon$'
 data_labels_pot = [r'iteration = ' + str(i) for i in iterations_to_plot]
