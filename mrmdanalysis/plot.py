@@ -144,7 +144,7 @@ def plot_PofNs(N_grid, P_valss, labels, colors, markers, fig_title, file_out=Non
     
     plt.show()
 # %%
-def plot_PofNs_fit(N_grid, P_valss, initial_guesses, fig_title, xlims, labels, colors, markers, file_out=None, **kwargs):
+def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, colors, markers, file_out=None, xlabel=r'$N$ - $\langle N \rangle$ in $1$', ylabel=r'$P(N)$ in $1$', **kwargs):
     '''
     Calculate and plot Gaussian-fitted P(N)'s shifted to zero.
 
@@ -158,7 +158,10 @@ def plot_PofNs_fit(N_grid, P_valss, initial_guesses, fig_title, xlims, labels, c
         **kwargs : Keyword arguments
             Keyword arguments directly passed on to plt.scatter.
     '''
+    N_grid_fit = np.linspace(xlims[0], xlims[1], 10000)
+
     for i, P_vals in enumerate(P_valss):
+        N_grid = N_grids[i]
         initial_guess = initial_guesses[i]
         label = labels[i]
         color = colors[i]
@@ -166,20 +169,21 @@ def plot_PofNs_fit(N_grid, P_valss, initial_guesses, fig_title, xlims, labels, c
 
         # final iteration of tf
         fit_params, _ = curve_fit(gaussian, N_grid[:-1], P_vals, p0=initial_guess) 
-        fit_function = gaussian(N_grid[:-1], fit_params[0], fit_params[1], fit_params[2])
+        fit_function = gaussian(N_grid_fit[:-1], fit_params[0], fit_params[1], fit_params[2])
 
         # shift values
-        N_max = N_grid[np.where(fit_function == np.max(fit_function))[0][0]]
+        N_max = N_grid_fit[np.where(fit_function == np.max(fit_function))[0][0]]
         N_grid_shifted = N_grid[:-1] - N_max
+        N_grid_fit_shifted = N_grid_fit[:-1] - N_max
 
         plt.scatter(N_grid_shifted, P_vals, color=color, marker=marker, alpha=0.2, **kwargs)
-        plt.plot(N_grid_shifted, fit_function, label=label, color=color)
+        plt.plot(N_grid_fit_shifted, fit_function, label=label, color=color)
 
     plt.legend(framealpha=0)
     plt.title(fig_title)
     plt.xlim(xlims[0], xlims[1])
-    plt.xlabel(r'$N$ - $\langle N \rangle$ in $1$')
-    plt.ylabel(r'$P(N)$ in $1$')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
 
     if file_out:
         plt.savefig(fname=file_out, format='png', dpi=150)
