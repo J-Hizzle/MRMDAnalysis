@@ -113,7 +113,7 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_PofNs(N_grid, P_valss, labels, colors, markers, fig_title, file_out=None, **kwargs):
+def plot_PofNs(N_grids, P_valss, labels, colors, fig_title, xlabel=r'$N$ in $1$', ylabel=r'$P(N)$ in $1$', file_out=None, fontsize=None, **kwargs):
     '''
     Calculate and plot the probability density of finding a certain number of particles within an open system 
     in an AdResS or full-atomistic MD simulation done in Gromacs.
@@ -128,23 +128,23 @@ def plot_PofNs(N_grid, P_valss, labels, colors, markers, fig_title, file_out=Non
             Keyword arguments directly passed on to plt.scatter.
     '''
     for i, P_vals in enumerate(P_valss):
+        N_grid = N_grids[i]
         label = labels[i]
         color = colors[i]
-        marker = markers[i]
 
-        plt.scatter(N_grid[:-1], P_vals, label=label, color=color, marker=marker, **kwargs)
+        plt.plot(N_grid[:-1], P_vals, label=label, color=color, **kwargs)
     
-    plt.legend(framealpha=0)
+    plt.legend(framealpha=0, fontsize=fontsize)
     plt.title(fig_title)
-    plt.xlabel(r'$N$ in $1$')
-    plt.ylabel(r'$P(N)$ in $1$')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
 
     if file_out:
         plt.savefig(fname=file_out, format='png', dpi=150)
     
     plt.show()
 # %%
-def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, colors, markers, file_out=None, xlabel=r'$N$ - $\langle N \rangle$ in $1$', ylabel=r'$P(N)$ in $1$', **kwargs):
+def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, colors, markers, file_out=None, fontsize=None, xlabel=r'$N$ - $\langle N \rangle$ in $1$', ylabel=r'$P(N)$ in $1$', **kwargs):
     '''
     Calculate and plot Gaussian-fitted P(N)'s shifted to zero.
 
@@ -158,7 +158,7 @@ def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, 
         **kwargs : Keyword arguments
             Keyword arguments directly passed on to plt.scatter.
     '''
-    N_grid_fit = np.linspace(xlims[0], xlims[1], 10000)
+    N_grid_fit = np.linspace(np.min([N_grid[0] for N_grid in N_grids]), np.max([N_grid[-1] for N_grid in N_grids]), 10000)
 
     for i, P_vals in enumerate(P_valss):
         N_grid = N_grids[i]
@@ -179,7 +179,7 @@ def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, 
         plt.scatter(N_grid_shifted, P_vals, color=color, marker=marker, alpha=0.2, **kwargs)
         plt.plot(N_grid_fit_shifted, fit_function, label=label, color=color)
 
-    plt.legend(framealpha=0)
+    plt.legend(framealpha=0, fontsize=fontsize)
     plt.title(fig_title)
     plt.xlim(xlims[0], xlims[1])
     plt.xlabel(xlabel)

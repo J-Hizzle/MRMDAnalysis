@@ -17,7 +17,7 @@ def calc_thermodynamic_force_from_coupling_potential(x_grid, pot_vals):
     return force_vals
 # %%
 def cut_data_to_new_box(x_grid, data_vals, r_ref, app_min, app_max, r_ref_new, app_min_new, app_max_new):
-    x_grid_cut = np.arange(0, r_ref_new * 2, x_grid[1] - x_grid[0])
+    x_grid_cut = np.arange(x_grid[0], r_ref_new * 2, x_grid[1] - x_grid[0])
     data_vals_cut = np.zeros_like(x_grid_cut)
     print((np.where((x_grid_cut >= r_ref_new - app_max_new) & (x_grid_cut <= r_ref_new - app_min_new))))
     print((np.where((x_grid >= r_ref - app_max) & (x_grid <= r_ref - app_min))))
