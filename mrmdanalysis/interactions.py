@@ -4,12 +4,12 @@ import os
 from MDAnalysis.analysis.distances import distance_array
 import MDAnalysis as mda
 # %%
-def calc_average_force_through_interface_for_particles_around_x_planes(x_plane_grid, x_margin, r_ref, r_max, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq, file_out=None):
+def calc_average_force_through_interface_for_particles_around_x_planes(x_plane_grid, x_margin, x_interface, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq, file_out=None):
     average_force_vals = np.zeros((len(x_plane_grid), 3))
     
     for i, x_plane in enumerate(x_plane_grid):
         print('plane = {0} of {1}'.format(i + 1, len(x_plane_grid)), flush=True, end='\r')
-        average_force_vals[i] = calc_average_force_vector_through_interface_for_particles_around_x_plane(x_plane, x_margin, r_ref, r_max, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq)
+        average_force_vals[i] = calc_average_force_vector_through_interface_for_particles_around_x_plane(x_plane, x_margin, x_interface, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq)
 
         if file_out:
             f_out = open(file_out, "a")
@@ -18,16 +18,16 @@ def calc_average_force_through_interface_for_particles_around_x_planes(x_plane_g
 
     return average_force_vals
 # %%
-def calc_average_force_vector_through_interface_for_particles_around_x_plane(x_plane, x_margin, r_ref, r_max, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq):
+def calc_average_force_vector_through_interface_for_particles_around_x_plane(x_plane, x_margin, x_interface, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq):
     # load files into mda universe
-    universe = mda.Universe(file_tpr, file_trj, format=format_trj, topology_format=format_tpr)
+    universe = mda.Universe(file_tpr, file_trj, format=format_trj, topology_format=format_tpr, convert_units=False)
 
     # select atoms within bin
-    atom_selection = 'name {0} and prop x >= {1} and prop x < {2}'.format(atom_name, (x_plane - x_margin) * 10, (x_plane + x_margin) * 10)
-    atom_group = universe.select_atoms(atom_selection, updating=True)
+    cis_selection = 'name {0} and prop x >= {1} and prop x <= {2} and prop x <= {3}'.format(atom_name, (x_plane - x_margin), (x_plane + x_margin), x_interface)
+    cis_group = universe.select_atoms(cis_selection, updating=True)
 
-    tracer_selection = 'name {0} and prop x >= {1} or prop x < {2}'.format(atom_name, (r_ref + r_max) * 10, (r_ref - r_max) * 10)
-    tracer_group = universe.select_atoms(tracer_selection, updating=True)
+    trans_selection = 'name {0} and prop x >= {1}'.format(atom_name, x_interface)
+    trans_group = universe.select_atoms(trans_selection, updating=True)
 
     # cut trajectory according to user input
     traj_cut = universe.trajectory[frame_lims[0]:frame_lims[1]][::frame_freq]
@@ -35,11 +35,16 @@ def calc_average_force_vector_through_interface_for_particles_around_x_plane(x_p
     average_forces_x_plane = np.zeros((len(traj_cut), 3))
 
     for i, frame in enumerate(traj_cut):
-        atom_positions = atom_group.positions/10
-        tracer_positions = tracer_group.positions/10
-        average_forces_x_plane[i] = calc_average_force_vector_per_particle_in_sample_group(atom_positions, tracer_positions, r_cut, epsilon, sigma, force_cap=None, capping_scheme=None)
+        if len(cis_group.positions) == 0 or len(trans_group.positions) == 0:
+            average_forces_x_plane[i] = np.array([np.nan, np.nan, np.nan])
+            print("yo at", i)
+            break
+    
+        cis_positions = cis_group.positions
+        trans_positions = trans_group.positions
+        average_forces_x_plane[i] = calc_average_force_vector_per_particle_in_sample_group(cis_positions, trans_positions, r_cut, epsilon, sigma, force_cap=None, capping_scheme=None) 
 
-    average_force_x_plane = np.mean(average_forces_x_plane, axis=0)
+    average_force_x_plane = np.nanmean(average_forces_x_plane, axis=0)
 
     return average_force_x_plane
 # %%
