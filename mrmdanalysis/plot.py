@@ -4,6 +4,7 @@ import os
 from scipy.optimize import curve_fit
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 import scienceplots
 plt.style.use(['science', 'notebook', 'grid'])
 plt.rcParams['text.usetex'] = True
@@ -11,7 +12,31 @@ plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 
 from mrmdanalysis.statistics import gaussian
 # %%
-def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, data_labels, fig_title, colors, y_lims, file_plt=None, format_plt=None, linestyles=None):
+def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref, r_min, r_max, linestyles=None, legend_loc="outside lower center", fig_title=None, file_plt=None, format_plt=None):
+    fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(24, 18), constrained_layout=True, gridspec_kw={'width_ratios': [1, 1, 1, 1]})
+
+    for row_index in range(0, len(pos_gridsss)):  
+        for column_index in range(0, len(pos_gridsss[0])):
+            pos_grids = pos_gridsss[row_index][column_index]
+            data_profiles = data_profilesss[row_index][column_index]
+            x_label = x_labelss[row_index][column_index]      
+            y_label = y_labelss[row_index][column_index]
+            x_lims = x_limsss[row_index][column_index]
+            y_lims = y_limsss[row_index][column_index]
+
+            plt.sca(ax[row_index, column_index])
+            plot = plot_profile_in_half_adress_box(pos_grids, data_profiles, r_ref, r_min, r_max, x_label, y_label, colors, x_lims, y_lims, linestyles=linestyles)
+
+    handles = [mlines.Line2D([], [], color=colors[i], label=data_labels[i], linestyle=linestyles[i]) for i in range(len(data_labels))]
+    fig.legend(handles=handles, loc=legend_loc, ncols=len(data_labels))
+
+    if file_plt:
+        if os.path.isfile(file_plt):
+            print('file already exists! Aborting.')
+        else:
+            plt.savefig(fname=file_plt, dpi=150, format=format_plt)
+
+def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, colors, y_lims, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
     '''
     Plot a data profile (e.g. density or thermodynamic force) in an AdResS simulation box.
     
@@ -46,7 +71,9 @@ def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_lab
     linestyles : list (dtype=str)
         List of linestyles for the datasets. If None, all datasets will be plotted with a solid line.
     '''
-    
+    if not data_labels:
+        data_labels = ["" for i in range(len(data_valss))]
+
     if linestyles is None:
         linestyles = ['solid'] * len(data_valss)
 
@@ -60,7 +87,9 @@ def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_lab
     plt.ylabel(y_label)
 
     plt.title(fig_title)
-    plt.legend(framealpha=0.0, fontsize=12)
+
+    if legend:
+        plt.legend(framealpha=0.0, fontsize=12)
 
     plt.axvline(-r_min, color='black', alpha=2*alpha_val)
     plt.axvline(r_min, color='black', alpha=2*alpha_val)
@@ -80,8 +109,11 @@ def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_lab
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None, loc='best', linestyles=None):
-    if linestyles is None:
+def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, colors, x_lims, y_lims, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
+    if not data_labels:
+        data_labels = ["" for i in range(len(data_valss))]
+
+    if not linestyles:
         linestyles = ['solid'] * len(data_valss)
 
     alpha_val = 0.2
@@ -96,7 +128,9 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
     plt.ylabel(y_label)
 
     plt.title(fig_title)
-    plt.legend(framealpha=0.0, fontsize=12, loc=loc)
+
+    if legend:
+        plt.legend(framealpha=0.0, fontsize=12, loc="best")
 
     plt.axvline(r_min, color='black', alpha=2*alpha_val)
     plt.axvline(r_max, color='black', alpha=2*alpha_val)
@@ -104,6 +138,36 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
     plt.text(x_lims[0] + (r_min - x_lims[0])/2, textheight, r'AT', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.text(r_min + (r_max - r_min)/2, textheight, r'$\Delta$', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.text(r_max + (x_lims[1] - r_max)/2, textheight, r'TR', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.xlim(x_lims[0], x_lims[1])
+    plt.ylim(y_lims[0], y_lims[1])
+
+    if file_plt:
+        if os.path.isfile(file_plt):
+            print('file already exists! Aborting.')
+        else:
+            plt.savefig(fname=file_plt, dpi=150, format=format_plt)
+# %%
+def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None, loc='best', fontsize=10, linestyles=None):
+    if linestyles is None:
+        linestyles = ['solid'] * len(data_valss)
+
+    alpha_val = 0.2
+    textheight = y_lims[1] - (y_lims[1] - y_lims[0])/20
+
+    for i in range(len(data_valss)):
+        plt.plot(pos_grids[i], data_valss[i], label=data_labels[i], color=colors[i], linewidth=0.75, linestyle=linestyles[i])
+
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    plt.title(fig_title)
+    plt.legend(framealpha=0.0, fontsize=fontsize, loc=loc)
+
+    plt.axvline(x_inter, color='black', alpha=2*alpha_val)
+
+    plt.text(x_inter - (x_inter - x_lims[0])/2, textheight, r'AT', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.text(x_inter + (x_lims[1] - x_inter)/2, textheight, r'$\Delta$', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    
     plt.xlim(x_lims[0], x_lims[1])
     plt.ylim(y_lims[0], y_lims[1])
 

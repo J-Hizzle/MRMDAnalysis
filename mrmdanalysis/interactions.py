@@ -37,8 +37,7 @@ def calc_average_force_vector_through_interface_for_particles_around_x_plane(x_p
     for i, frame in enumerate(traj_cut):
         if len(cis_group.positions) == 0 or len(trans_group.positions) == 0:
             average_forces_x_plane[i] = np.array([np.nan, np.nan, np.nan])
-            print("yo at", i)
-            break
+            continue
     
         cis_positions = cis_group.positions
         trans_positions = trans_group.positions
