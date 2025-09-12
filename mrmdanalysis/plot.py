@@ -12,7 +12,7 @@ plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 
 from mrmdanalysis.statistics import gaussian
 # %%
-def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref, r_min, r_max, linestyles=None, legend_loc="outside lower center", fig_title=None, file_plt=None, format_plt=None):
+def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref, r_min, r_max, linestyles=None, legend_loc="outside lower center", fig_title=None, file_plt=None, format_plt=None, text_AT=None):
     fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(24, 18), constrained_layout=True, gridspec_kw={'width_ratios': [1, 1, 1, 1]})
 
     for row_index in range(0, len(pos_gridsss)):  
@@ -25,10 +25,10 @@ def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_l
             y_lims = y_limsss[row_index][column_index]
 
             plt.sca(ax[row_index, column_index])
-            plot = plot_profile_in_half_adress_box(pos_grids, data_profiles, r_ref, r_min, r_max, x_label, y_label, colors, x_lims, y_lims, linestyles=linestyles)
+            plot_profile_in_half_adress_box(pos_grids, data_profiles, r_ref, r_min, r_max, colors, x_lims, y_lims, x_label, y_label, linestyles=linestyles, text_AT=text_AT)
 
     handles = [mlines.Line2D([], [], color=colors[i], label=data_labels[i], linestyle=linestyles[i]) for i in range(len(data_labels))]
-    fig.legend(handles=handles, loc=legend_loc, ncols=len(data_labels))
+    fig.legend(handles=handles, loc=legend_loc)
 
     if file_plt:
         if os.path.isfile(file_plt):
@@ -36,7 +36,7 @@ def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_l
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 
-def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, colors, y_lims, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
+def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, colors, y_lims, x_label=None, y_label=None, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
     '''
     Plot a data profile (e.g. density or thermodynamic force) in an AdResS simulation box.
     
@@ -109,7 +109,7 @@ def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_lab
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, x_label, y_label, colors, x_lims, y_lims, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
+def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, colors, x_lims, y_lims, x_label=None, y_label=None, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None, text_AT='AT'):
     if not data_labels:
         data_labels = ["" for i in range(len(data_valss))]
 
@@ -135,7 +135,7 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
     plt.axvline(r_min, color='black', alpha=2*alpha_val)
     plt.axvline(r_max, color='black', alpha=2*alpha_val)
 
-    plt.text(x_lims[0] + (r_min - x_lims[0])/2, textheight, r'AT', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.text(x_lims[0] + (r_min - x_lims[0])/2, textheight, text_AT, fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.text(r_min + (r_max - r_min)/2, textheight, r'$\Delta$', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.text(r_max + (x_lims[1] - r_max)/2, textheight, r'TR', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.xlim(x_lims[0], x_lims[1])
