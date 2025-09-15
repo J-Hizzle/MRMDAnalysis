@@ -1,5 +1,6 @@
 # %%
 import pathlib as plb
+import glob
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,16 +10,20 @@ plt.rcParams['text.usetex'] = True
 plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 
 from mrmdanalysis.plot import plot_PofNs, plot_PofNs_fit, select_color_from_colormap
+from mrmdanalysis.read import read_mrmd_out
 # %%
-file_bases = ["tracerProduction_23828863_2025_08_15",\
-              "tracerProduction_23843205_2025_08_19",\
-              "tracerProduction_23848988_2025_08_21",\
-              "tracerProduction_23828869_2025_08_15",\
-              "atomisticProduction_23854725_2025_08_23",\
-              "atomisticProduction_23849820_2025_08_21"]
-files_obs = [plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/{0}/{0}_observables.txt'.format(file_base)).resolve() for file_base in file_bases]
+file_bases = ["tracerProduction_23945719_2025_09_09",\
+              "tracerProduction_23945717_2025_09_09",\
+              "tracerProduction_23945715_2025_09_09",\
+              "tracerProduction_23945712_2025_09_09",\
+              "atomisticProduction_23945334_2025_09_09"]
 
-conversion_factors = [3, 1, 1, 1, 1, 1]
+density = 0.370
+#density = 0.198
+
+files_obs = [next(plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho{0:04d}_2025_09_03/{1}/'.format(int(density * 1000), file_base)).resolve().glob("*.out")) for file_base in file_bases]
+
+conversion_factors = [3, 1.5, 1, 1, 1, 1]
 
 initial_guesses = [np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100])]
 fit_xlims = [-50.0, 50.0]
@@ -35,8 +40,8 @@ fontsize = 8
 
 file_plt_flux = None
 
-out_base = "boundary_flux_distributions_2025_08_25"
-path_out = plb.Path('/srv/public/julianhille/presentations/reports_2025/report_2025_08_26').resolve()
+out_base = "boundary_flux_distributions_test_2025_09_12"
+path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
 file_plt_flux = path_out / '{0}.png'.format(out_base)
 file_plt_fit = path_out / '{0}_fit.png'.format(out_base)
 # %%
@@ -45,9 +50,7 @@ N_grids = []
 
 for i, file_obs in enumerate(files_obs):
     print("file number = ", i)
-    with open(file_obs, 'r') as file:
-        lines = map(lambda x: x.replace("│", ""), file.readlines())
-        fluxes = np.loadtxt(lines, skiprows=2, usecols=(8), dtype=int)
+    fluxes = read_mrmd_out(file_obs, usecols=(9))
     N_grid = np.arange(np.min(fluxes), np.max(fluxes), 1) * conversion_factors[i]
     fluxHist = np.histogram(fluxes * conversion_factors[i], N_grid, density=True)
 

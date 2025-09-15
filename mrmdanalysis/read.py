@@ -24,3 +24,8 @@ def read_data_on_grid(filename):
 
     return pos_x_grid, data_vals
 # %%
+def read_mrmd_out(filename, **kwargs):
+    with open(filename, 'r') as file:
+        lines = [line.replace("│", "") for line in file if line.startswith(" │")]
+        data = np.loadtxt(lines, skiprows=1, dtype=int, **kwargs)
+    return data
