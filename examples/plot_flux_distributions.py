@@ -12,18 +12,42 @@ plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 from mrmdanalysis.plot import plot_PofNs, plot_PofNs_fit, select_color_from_colormap
 from mrmdanalysis.read import read_mrmd_out
 # %%
-file_bases = ["tracerProduction_23945719_2025_09_09",\
-              "tracerProduction_23945717_2025_09_09",\
-              "tracerProduction_23945715_2025_09_09",\
-              "tracerProduction_23945712_2025_09_09",\
-              "atomisticProduction_23945334_2025_09_09"]
+#file_bases = ["tracerProduction_23945719_2025_09_09",\
+#              "tracerProduction_23945717_2025_09_09",\
+#              "tracerProduction_23945715_2025_09_09",\
+#              "tracerProduction_23945712_2025_09_09",\
+#              "atomisticProduction_23945334_2025_09_09"]
+#file_bases = ["tracerProduction_23945720_2025_09_09",\
+#              "tracerProduction_23945721_2025_09_09",\
+#              "tracerProduction_23945722_2025_09_09",\
+#              "tracerProduction_23945723_2025_09_09",\
+#              "atomisticProduction_23945366_2025_09_09"]
+#file_bases = ["tracerProduction_23949517_2025_09_10",\
+#              "tracerProduction_23949521_2025_09_10",\
+#              "tracerProduction_23949523_2025_09_10",\
+#              "tracerProduction_23956781_2025_09_12",\
+#              "atomisticProduction_23945374_2025_09_09"]
+file_bases = ["tracerProduction_23949525_2025_09_10",\
+              "tracerProduction_23949527_2025_09_10",\
+              "tracerProduction_23949529_2025_09_10",\
+              "tracerProduction_23956779_2025_09_12",\
+              "atomisticProduction_23945376_2025_09_09"]
 
-density = 0.370
-#density = 0.198
+subdomain_dimensionss = [(10.0, 10.0, 10.0),\
+                        (10.0, 20.0, 20.0),\
+                        (10.0, 30.0, 30.0),\
+                        (30.0, 30.0, 30.0),
+                        (30.0, 30.0, 30.0)]
+
+#density = 0.370
+#density = 0.296
+#density = 0.247
+density = 0.198
 
 files_obs = [next(plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho{0:04d}_2025_09_03/{1}/'.format(int(density * 1000), file_base)).resolve().glob("*.out")) for file_base in file_bases]
-
-conversion_factors = [3, 1.5, 1, 1, 1, 1]
+interface_areas = [subdomain_dimensions[1] for subdomain_dimensions in subdomain_dimensionss] # in sigma^2
+time_interval = 1 # in tau 
+conversion_factors = [10/(interface_area * time_interval) for interface_area in interface_areas]
 
 initial_guesses = [np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100]), np.asarray([0.01, 0, 100])]
 fit_xlims = [-50.0, 50.0]
@@ -33,7 +57,9 @@ fig_title_fit = "Gaussian-fit boundary particle flux distributions"
 xlabel = r'$\delta N$ in $1$'
 ylabel = r'$P(\delta N)$ in $1$'
 
-labels = [r"AdResS ($N = 370$, $\gamma = 20$, $d_{TR} = 5$)", r"AdResS ($N = 3330$, $\gamma = 20$, $d_{TR} = 5$)", r"AdResS ($N = 9990$, $\gamma = 20$, $d_{TR} = 5$)", r"AdResS ($N = 15000$, $\gamma = 20$, $d_{TR} = 34$)", r"Full-AT ($N = 9990$, $\gamma = 20$)", r"Full-AT ($N = 9990$, $\gamma = 1$)"]
+labels = ["$x = {0}, y = {1}, z = {2}$".format(subdomain_dimensions[0], subdomain_dimensions[1], subdomain_dimensions[2]) for subdomain_dimensions in subdomain_dimensionss]
+labels[-1] = "$x = {0}, y = {1}, z = {2}$, Full-AT".format(subdomain_dimensionss[-1][0], subdomain_dimensionss[-1][1], subdomain_dimensionss[-1][2])
+
 markers = ["^", "o", "v", "s", "D", "P"]
 colors = [select_color_from_colormap(range_indicator/len(file_bases), 'plasma') for range_indicator in range(len(file_bases))]
 fontsize = 8

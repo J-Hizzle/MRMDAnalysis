@@ -12,8 +12,8 @@ plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 
 from mrmdanalysis.statistics import gaussian
 # %%
-def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref, r_min, r_max, linestyles=None, legend_loc="outside lower center", fig_title=None, file_plt=None, format_plt=None, text_AT=None):
-    fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(24, 18), constrained_layout=True, gridspec_kw={'width_ratios': [1, 1, 1, 1]})
+def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref, r_min, r_max, linestyles=None, legend_loc="outside lower center", axis_titles=None, fig_title=None, file_plt=None, format_plt=None, text_AT=None, scale=6):
+    fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(len(pos_gridsss[0]) * scale, len(pos_gridsss) * scale), constrained_layout=True, squeeze=False)
 
     for row_index in range(0, len(pos_gridsss)):  
         for column_index in range(0, len(pos_gridsss[0])):
@@ -23,9 +23,24 @@ def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_l
             y_label = y_labelss[row_index][column_index]
             x_lims = x_limsss[row_index][column_index]
             y_lims = y_limsss[row_index][column_index]
+            if axis_titles and column_index == 0:
+                axis_title = axis_titles[column_index]
+            else:
+                axis_title = None
 
             plt.sca(ax[row_index, column_index])
-            plot_profile_in_half_adress_box(pos_grids, data_profiles, r_ref, r_min, r_max, colors, x_lims, y_lims, x_label, y_label, linestyles=linestyles, text_AT=text_AT)
+            plot_profile_in_half_adress_box(pos_grids, data_profiles, r_ref, r_min, r_max, colors, x_lims, y_lims, x_label, y_label, linestyles=linestyles, text_AT=text_AT, fig_title=axis_title)
+            
+            if row_index < len(pos_gridsss) - 1:
+                plt.tick_params(axis='x', labelbottom=False)
+            #if row_index == 0:
+            #    plt.tick_params(axis='x', labeltop=True)
+            if column_index > 0:
+                plt.tick_params(axis='y', labelleft=False)
+                
+            #if column_index == len(pos_gridsss[0]) - 1:
+            #    plt.tick_params(axis='y', labelright=True)
+
 
     handles = [mlines.Line2D([], [], color=colors[i], label=data_labels[i], linestyle=linestyles[i]) for i in range(len(data_labels))]
     fig.legend(handles=handles, loc=legend_loc)
@@ -147,7 +162,7 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None, loc='best', fontsize=10, linestyles=None):
+def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None, loc='best', fontsize=10, linestyles=None, label_left='AT', label_right=r'$\Delta$'):
     if linestyles is None:
         linestyles = ['solid'] * len(data_valss)
 
@@ -165,8 +180,8 @@ def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, 
 
     plt.axvline(x_inter, color='black', alpha=2*alpha_val)
 
-    plt.text(x_inter - (x_inter - x_lims[0])/2, textheight, r'AT', fontsize=18, horizontalalignment='center', verticalalignment='center')
-    plt.text(x_inter + (x_lims[1] - x_inter)/2, textheight, r'$\Delta$', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.text(x_inter - (x_inter - x_lims[0])/2, textheight, label_left, fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.text(x_inter + (x_lims[1] - x_inter)/2, textheight, label_right, fontsize=18, horizontalalignment='center', verticalalignment='center')
     
     plt.xlim(x_lims[0], x_lims[1])
     plt.ylim(y_lims[0], y_lims[1])

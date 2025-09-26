@@ -8,7 +8,7 @@ def calc_average_force_through_interface_for_particles_around_x_planes(x_plane_g
     average_force_vals = np.zeros((len(x_plane_grid), 3))
     
     for i, x_plane in enumerate(x_plane_grid):
-        print('plane = {0} of {1}'.format(i + 1, len(x_plane_grid)), flush=True, end='\r')
+        print('plane = {0:2d} of {1}'.format(i + 1, len(x_plane_grid)), flush=True, end='\r')
         average_force_vals[i] = calc_average_force_vector_through_interface_for_particles_around_x_plane(x_plane, x_margin, x_interface, r_cut, epsilon, sigma, file_tpr, file_trj, format_tpr, format_trj, atom_name, frame_lims, frame_freq)
 
         if file_out:

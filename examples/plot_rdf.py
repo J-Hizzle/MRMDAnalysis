@@ -9,12 +9,19 @@ plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 
 from mrmdanalysis.structure import calc_rdf_in_slab
 # %%
-path_data = plb.Path('/srv/public/julianhille/project/mrmd/build/examples/TracerThermodynamicForce').resolve()
-#path_data = plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mosceto/testing/ghost_face_lj_fa_prod_26_03_2024').resolve()
-file_top = path_data / 'equilibrateLangevin.gro'
-file_trj = path_data / 'equilibrateLangevin.h5md'
-format_top = 'GRO'
+density = 0.370
+
+file_base = "tracerProduction_n370_T20_24019679_2025_09_23"
+
+#path_parent = plb.Path("/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations").resolve()
+path_parent = plb.Path("/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations").resolve()
+
+file_trj = path_parent / 'rho{0:04d}_T20_2025_09_19/{1}/{1}.h5md'.format(int(density * 1000), file_base)
+file_top = path_parent / 'rho{0:04d}_T20_2025_09_19/{1}/{1}.gro'.format(int(density * 1000), file_base)
+
 format_trj = 'H5MD'
+format_top = 'GRO'
+
 atom_group_1_name = 'Ar'
 atom_group_2_name = 'Ar'
 x_min = 00
