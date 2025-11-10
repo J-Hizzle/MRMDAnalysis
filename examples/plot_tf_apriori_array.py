@@ -12,6 +12,7 @@ import scienceplots
 plt.style.use(['science', 'notebook', 'grid'])
 plt.rcParams['text.usetex'] = True
 plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
+plt.rc('text.latex', preamble=r'\usepackage{siunitx}')
 # %%
 file_basess = [["equilibrateLangevin_x10_y20_z20_n1184",\
               "equilibrateLangevin_x10_y30_z30_n2664",\
@@ -74,15 +75,19 @@ t_step = 1
 
 r_grid = np.linspace(0.01, 2.5, 10000)
 
-path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
+#path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
+path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
 
 file_plt = None
 format_plt = None
 
-out_base = "tf_apriori_array_2025_09_26.svg"
+out_base = "tf_apriori_array_2025_10_07.svg"
 file_plt = path_out / '{0}'.format(out_base)
 format_plt = 'SVG'
 # %%
+'''
+Calculate the a priori thermodynamic forces
+'''
 rdfss = []
 for i, file_bases in enumerate(file_basess):
     rdfs = []
@@ -101,7 +106,7 @@ for i, file_bases in enumerate(file_basess):
     rdfs.append(rdf_lj_goldman)
     rdfs.append(rdf_lj_morsali)
     rdfss.append(rdfs)
-# %%
+
 rdfss_eval = []
 for i, rdfs in enumerate(rdfss):
     rdfs_eval = []
@@ -109,15 +114,8 @@ for i, rdfs in enumerate(rdfss):
         rdf_eval = rdf.rdf_lj(r_grid)
         rdfs_eval.append(rdf_eval)
     rdfss_eval.append(rdfs_eval)
-# %%
-'''
-Calculate the a priori thermodynamic forces
-'''
-x_gridss_interp = []
-tf_profiless = []
+
 for i, rdfs in enumerate(rdfss):
-    x_grids_interp = []
-    tf_profiles = []
     for j, rdf in enumerate(rdfs):
         force_vals_av_initialGuess, _ = calc_av_force(x_grid_initialGuess[(x_grid_initialGuess >= app_min) & (x_grid_initialGuess <= app_max)], x_delta_TR_initialGuess, r_cut, densities[i], rdf.rdf_lj, pot_lj_shifted_cap.force_lj)
 
@@ -136,10 +134,19 @@ for i, rdfs in enumerate(rdfss):
         applied_force_vals_av_interp = np.interp(x_grid_interp, x_grid_initTotal, applied_force_vals_av)
 
         write_array = np.column_stack((x_grid_interp, applied_force_vals_av_interp)).T
-        savename = path_out / '{0}_{1}_2025_09_26'.format(i, j)
+        savename = path_out / '{0}_{1}_2025_09_26.txt'.format(i, j)
 
         np.savetxt(savename, write_array, fmt='%05.6e')
+# %%
+x_gridss_interp = []
+tf_profiless = []
+for i in range(len(file_basess)):
+    x_grids_interp = []
+    tf_profiles = []
+    for j in range(len(file_basess[0]) + 2):
+        readname = path_out / '{0}_{1}_2025_09_26.txt'.format(i, j)
 
+        x_grid_interp, applied_force_vals_av_interp = np.loadtxt(readname, dtype=float, delimiter=" ")
         x_grids_interp.append(x_grid_interp)
         tf_profiles.append(applied_force_vals_av_interp)
 
@@ -149,11 +156,11 @@ for i, rdfs in enumerate(rdfss):
 pos_gridsss = [x_gridss_interp]
 data_profilesss = [tf_profiless]
 # %%
-legend_loc = (0.15, 0.15)
+legend_loc = (0.85, 0.15)
 
 x_labelss = []
 y_labelss = []
-y_label_types = [r'$F_{av}$ in $\epsilon/\sigma$']
+y_label_types = [r'$F_{\mathrm{av}}^x(x_{\Delta/\mathrm{TR}} - x)$ in $\epsilon/\sigma$']
 
 for i, pos_gridss in enumerate(pos_gridsss):
     x_labels = []
@@ -173,7 +180,7 @@ for i, pos_gridss in enumerate(pos_gridsss):
 x_lims_types = [[0.0, 5.0]]
 x_limsss = [[x_lims_types[i] for j in range(len(pos_gridss))] for i, pos_gridss in enumerate(pos_gridsss)]
 
-y_lims_types = [[-3.6, 1.6]]
+y_lims_types = [[-2.0, 1.6]]
 y_limsss = [[y_lims_types[i] for j in range(len(pos_gridss))] for i, pos_gridss in enumerate(pos_gridsss)]
 
 data_labels = ["EQ (minimal)",\
@@ -182,13 +189,17 @@ data_labels = ["EQ (minimal)",\
                "Goldman",\
                "Morsali"]
 
+axis_titles = [r'$\rho = \SI{0.296}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\mathrm{B}}}$',\
+               r'$\rho = \SI{0.370}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\mathrm{B}}}$',\
+               r'$\rho = \SI{0.370}{\sigma^{-3}}$, $T = \SI{2.0}{\epsilon/k_{\mathrm{B}}}$']
+
 colors = [select_color_from_colormap(range_indicator/(len(tf_profiles) - 2) / 2, 'plasma') for range_indicator in range(len(tf_profiles))]
-colors[-2] = 'black'
+colors[-2] = 'red'
 colors[-1] = 'green'
 linestyles = ['--', '-.', ':', '-', '-'] 
 
 
 scale = 5
 # %%
-plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref_base, r_min_base, r_max_base, linestyles=linestyles, file_plt=file_plt, format_plt=format_plt, legend_loc=legend_loc, scale=scale)
+plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref_base, r_min_base, r_max_base, linestyles=linestyles, file_plt=file_plt, format_plt=format_plt, legend_loc=legend_loc, scale=scale, axis_titles=axis_titles)
 # %%

@@ -9,6 +9,7 @@ import scienceplots
 plt.style.use(['science', 'notebook', 'grid'])
 plt.rcParams['text.usetex'] = True
 plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
+plt.rc('text.latex', preamble=r'\usepackage{siunitx}')
 
 from mrmdanalysis.statistics import gaussian
 # %%
@@ -23,7 +24,7 @@ def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_l
             y_label = y_labelss[row_index][column_index]
             x_lims = x_limsss[row_index][column_index]
             y_lims = y_limsss[row_index][column_index]
-            if axis_titles and column_index == 0:
+            if axis_titles and row_index == 0:
                 axis_title = axis_titles[column_index]
             else:
                 axis_title = None
@@ -43,7 +44,7 @@ def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_l
 
 
     handles = [mlines.Line2D([], [], color=colors[i], label=data_labels[i], linestyle=linestyles[i]) for i in range(len(data_labels))]
-    fig.legend(handles=handles, loc=legend_loc)
+    fig.legend(handles=handles, loc=legend_loc, framealpha=0.0)
 
     if file_plt:
         if os.path.isfile(file_plt):
@@ -162,7 +163,7 @@ def plot_profile_in_half_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, 
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, data_labels, fig_title, colors, x_lims, y_lims, file_plt=None, format_plt=None, loc='best', fontsize=10, linestyles=None, label_left='AT', label_right=r'$\Delta$'):
+def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, fig_title, colors, x_lims, y_lims, data_labels=None, legend=None, file_plt=None, format_plt=None, loc='best', fontsize=10, linestyles=None, label_left='AT', label_right=r'$\Delta$'):
     if linestyles is None:
         linestyles = ['solid'] * len(data_valss)
 
@@ -176,7 +177,9 @@ def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, 
     plt.ylabel(y_label)
 
     plt.title(fig_title)
-    plt.legend(framealpha=0.0, fontsize=fontsize, loc=loc)
+
+    if legend:
+        plt.legend(framealpha=0.0, fontsize=fontsize, loc=loc)
 
     plt.axvline(x_inter, color='black', alpha=2*alpha_val)
 
@@ -192,7 +195,7 @@ def plot_profile_at_interface(pos_grids, data_valss, x_inter, x_label, y_label, 
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 # %%
-def plot_PofNs(N_grids, P_valss, labels, colors, fig_title, xlabel=r'$N$ in $1$', ylabel=r'$P(N)$ in $1$', file_out=None, fontsize=None, **kwargs):
+def plot_PofNs(N_grids, P_valss, fig_title, colors, x_lims, y_lims, data_labels=None, legend=None, xlabel=r'$N$ in $1$', ylabel=r'$P(N)$ in $1$', file_out=None, fontsize=None, linestyles=None, **kwargs):
     '''
     Calculate and plot the probability density of finding a certain number of particles within an open system 
     in an AdResS or full-atomistic MD simulation done in Gromacs.
@@ -208,21 +211,24 @@ def plot_PofNs(N_grids, P_valss, labels, colors, fig_title, xlabel=r'$N$ in $1$'
     '''
     for i, P_vals in enumerate(P_valss):
         N_grid = N_grids[i]
-        label = labels[i]
+        label = data_labels[i]
         color = colors[i]
 
-        plt.plot(N_grid[:-1], P_vals, label=label, color=color, **kwargs)
+        plt.plot(N_grid, P_vals, label=label, color=color, linestyle=linestyles[i], **kwargs)
     
-    plt.legend(framealpha=0, fontsize=fontsize)
+    if legend:
+        plt.legend(framealpha=0, fontsize=fontsize)
     plt.title(fig_title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
+    plt.xlim(x_lims[0], x_lims[1])
+    plt.ylim(y_lims[0], y_lims[1])
+
+
     if file_out:
         plt.savefig(fname=file_out, format='png', dpi=150)
-    
-    plt.show()
-# %%
+    # %%
 def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, colors, markers, file_out=None, fontsize=None, xlabel=r'$N$ - $\langle N \rangle$ in $1$', ylabel=r'$P(N)$ in $1$', **kwargs):
     '''
     Calculate and plot Gaussian-fitted P(N)'s shifted to zero.
@@ -266,8 +272,6 @@ def plot_PofNs_fit(N_grids, P_valss, initial_guesses, fig_title, xlims, labels, 
 
     if file_out:
         plt.savefig(fname=file_out, format='png', dpi=150)
-    
-    plt.show()
 # %%
 def plot_Noft(time_grids, particle_numberss, labels, colors, markers, fig_title, file_out=None, run_mod=None):
     '''
@@ -302,7 +306,6 @@ def plot_Noft(time_grids, particle_numberss, labels, colors, markers, fig_title,
     
     if file_out: 
         plt.savefig(fname=file_out, format='png', dpi=150)
-    plt.show()
 # %%
 def select_color_from_colormap(range_indicator, colormap):
     '''

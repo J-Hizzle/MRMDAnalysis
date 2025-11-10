@@ -26,8 +26,6 @@ def count_particle_numbers(file_top, file_trj, atom_selection, format_top, forma
         frame_lims : list (dtype : int)
             Limitation for the frames to use in the plot.
             (Useful if one needs to match different simulations to each other)
-        label : str
-            Label for this plot.
 
     Returns:
     --------
@@ -49,6 +47,23 @@ def count_particle_numbers(file_top, file_trj, atom_selection, format_top, forma
     particle_numbers = np.asarray(particle_numbers)
 
     return particle_numbers
+# %%
+def count_velocities(vel_bins, file_top, file_trj, atom_selection, format_top, format_trj, frame_freq, frame_lims):
+    # load files into mda universe
+    universe = mda.Universe(file_top, file_trj, format=format_trj, topology_format=format_top, convert_units=False)
+    atom_group = universe.select_atoms(atom_selection, updating=True)
+
+    # cut trajectory according to user input
+    traj_cut = universe.trajectory[frame_lims[0]:frame_lims[1]][::frame_freq]
+
+    velocity_numbers = np.zeros_like(vel_bins)
+
+    for i in traj_cut:
+        abs_velocities = np.sqrt(atom_group.velocities[:, 0]**2 + atom_group.velocities[:, 1]**2 + atom_group.velocities[:, 2]**2)
+        for bin_index in range(len(vel_bins) - 1):
+            velocity_numbers[bin_index] += len(abs_velocities[(abs_velocities >= vel_bins[bin_index]) & (abs_velocities <= vel_bins[bin_index + 1] )])
+
+    return velocity_numbers
 # %%
 def gaussian(x, A, x0, sigma): 
     return A * np.exp(-(x - x0) ** 2 / (2 * sigma ** 2))

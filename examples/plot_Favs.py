@@ -84,8 +84,6 @@ file_plt_Fav = path_plt / '{0}.png'.format(plt_base)
 
 x_inters =  [5.0, 5.0, 5.0, 25.0, 25.0]
 
-cuts_to_new_box = [False, False, False, True, True]
-
 r_cut = 2.5
 epsilon = 1.0
 sigma = 1.0
@@ -106,14 +104,14 @@ ylims = [-1.5, 1.5]
 xlims = [-2.5, 0.2]
 fontsize = 8
 # %%
-for i, file_trj in enumerate(files_trj):
-    file_top = files_top[i]
-    file_out = files_out[i]
-
-    x_inter = x_inters[i]
-
-    x_plane_grid = np.arange(x_inter - r_cut, x_inter, densBinWidth) + densShift
-    average_force_vals = calc_average_force_through_interface_for_particles_around_x_planes(x_plane_grid, x_margin, x_inter, r_cut, epsilon, sigma, str(file_top), str(file_trj), format_top, format_trj, atom_name, frame_lims, frame_freq, file_out)
+#for i, file_trj in enumerate(files_trj):
+#    file_top = files_top[i]
+#    file_out = files_out[i]
+#
+#    x_inter = x_inters[i]
+#
+#    x_plane_grid = np.arange(x_inter - r_cut, x_inter, densBinWidth) + densShift
+#    average_force_vals = calc_average_force_through_interface_for_particles_around_x_planes(x_plane_grid, x_margin, x_inter, r_cut, epsilon, sigma, str(file_top), str(file_trj), format_top, format_trj, atom_name, frame_lims, frame_freq, file_out)
 # %%
 x_plane_grids = []
 average_force_valss_x = []

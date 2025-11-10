@@ -12,6 +12,10 @@ plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 from mrmdanalysis.plot import plot_PofNs, plot_PofNs_fit, select_color_from_colormap
 from mrmdanalysis.read import read_mrmd_out
 # %%
+file_bases = ["tracerProduction_23945717_2025_09_09",\
+              "tracerProduction_23945715_2025_09_09",\
+              "tracerProduction_23945712_2025_09_09",\
+              "atomisticProduction_23945334_2025_09_09"]
 #file_bases = ["tracerProduction_23945719_2025_09_09",\
 #              "tracerProduction_23945717_2025_09_09",\
 #              "tracerProduction_23945715_2025_09_09",\
@@ -27,24 +31,28 @@ from mrmdanalysis.read import read_mrmd_out
 #              "tracerProduction_23949523_2025_09_10",\
 #              "tracerProduction_23956781_2025_09_12",\
 #              "atomisticProduction_23945374_2025_09_09"]
-file_bases = ["tracerProduction_23949525_2025_09_10",\
-              "tracerProduction_23949527_2025_09_10",\
-              "tracerProduction_23949529_2025_09_10",\
-              "tracerProduction_23956779_2025_09_12",\
-              "atomisticProduction_23945376_2025_09_09"]
+#file_bases = ["tracerProduction_23949525_2025_09_10",\
+#              "tracerProduction_23949527_2025_09_10",\
+#              "tracerProduction_23949529_2025_09_10",\
+#              "tracerProduction_23956779_2025_09_12",\
+#              "atomisticProduction_23945376_2025_09_09"]
 
-subdomain_dimensionss = [(10.0, 10.0, 10.0),\
-                        (10.0, 20.0, 20.0),\
+#subdomain_dimensionss = [(10.0, 10.0, 10.0),\
+#                        (10.0, 20.0, 20.0),\
+#                        (10.0, 30.0, 30.0),\
+#                        (30.0, 30.0, 30.0),
+#                        (30.0, 30.0, 30.0)]
+subdomain_dimensionss = [(10.0, 20.0, 20.0),\
                         (10.0, 30.0, 30.0),\
                         (30.0, 30.0, 30.0),
                         (30.0, 30.0, 30.0)]
 
-#density = 0.370
+density = 0.370
 #density = 0.296
 #density = 0.247
-density = 0.198
+#density = 0.198
 
-files_obs = [next(plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho{0:04d}_2025_09_03/{1}/'.format(int(density * 1000), file_base)).resolve().glob("*.out")) for file_base in file_bases]
+files_obs = [next(plb.Path('/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho{0:04d}_2025_09_03/{1}/'.format(int(density * 1000), file_base)).resolve().glob("*.out")) for file_base in file_bases]
 interface_areas = [subdomain_dimensions[1] for subdomain_dimensions in subdomain_dimensionss] # in sigma^2
 time_interval = 1 # in tau 
 conversion_factors = [10/(interface_area * time_interval) for interface_area in interface_areas]
@@ -77,7 +85,7 @@ N_grids = []
 for i, file_obs in enumerate(files_obs):
     print("file number = ", i)
     fluxes = read_mrmd_out(file_obs, usecols=(9))
-    N_grid = np.arange(np.min(fluxes), np.max(fluxes), 1) * conversion_factors[i]
+    N_grid = np.arange(np.min(fluxes) * conversion_factors[i], np.max(fluxes) * conversion_factors[i], 1)
     fluxHist = np.histogram(fluxes * conversion_factors[i], N_grid, density=True)
 
     N_grids.append(N_grid)
