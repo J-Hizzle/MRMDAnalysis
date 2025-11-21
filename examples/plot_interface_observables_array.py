@@ -11,15 +11,6 @@ plt.style.use(['science', 'notebook', 'grid'])
 plt.rcParams['text.usetex'] = True
 plt.rc('axes', titlesize=22, labelsize=22)     # fontsize of the axes title
 plt.rc('text.latex', preamble=r'\usepackage{siunitx}')
-import matplotlib
-matplotlib.use("pgf")
-matplotlib.rcParams.update({
-    "pgf.texsystem": "pdflatex",
-    "pgf.preamble": r"\usepackage{siunitx}",
-    'font.family': 'serif',
-    'text.usetex': True,
-    'pgf.rcfonts': False,
-})
 
 from mrmdanalysis.plot import select_color_from_colormap, plot_profile_at_interface, plot_PofNs
 from mrmdanalysis.read import read_mrmd_out
@@ -107,11 +98,11 @@ path_read = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolv
 file_plt = None
 format_plt = None
 
-out_base = "interface_observables_array_2025_11_05.PGF"
+out_base = "interface_observables_array_2025_11_21.svg"
 #path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
 path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
 file_plt = path_out / '{0}'.format(out_base)
-format_plt = 'PGF'
+format_plt = 'SVG'
 # %%
 '''
 Read velocity distributions
@@ -222,7 +213,7 @@ axis_titles = [r'$\rho = \SI{0.296}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\ma
 #axis_titles = ["a", "b", "c"]
 scale = 5
 # %%
-fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(len(pos_gridsss[0]) * scale, len(pos_gridsss) * scale), constrained_layout=True, squeeze=False, )
+fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(len(pos_gridsss[0]) * scale, len(pos_gridsss) * scale), constrained_layout=True, squeeze=False)
 
 for column_index in range(0, len(pos_gridsss[i])):
     pos_grids = pos_gridsss[0][column_index]
@@ -331,4 +322,5 @@ if file_plt:
     else:
         plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 
+plt.show()
 # %%

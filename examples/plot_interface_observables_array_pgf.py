@@ -107,11 +107,11 @@ path_read = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolv
 file_plt = None
 format_plt = None
 
-out_base = "interface_observables_array_2025_11_05.PGF"
-#path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
-path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
-file_plt = path_out / '{0}'.format(out_base)
-format_plt = 'PGF'
+#out_base = "interface_observables_array_2025_11_05.PGF"
+##path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
+#path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
+#file_plt = path_out / '{0}'.format(out_base)
+#format_plt = 'PGF'
 # %%
 '''
 Read velocity distributions
@@ -233,7 +233,7 @@ y_limsss = [y_limsss[select]]
 
 out_base = "interface_observables_row0_2025_11_05.PGF"
 # %%
-fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(len(pos_gridsss[0]) * scale, len(pos_gridsss) * scale), constrained_layout=True, squeeze=False, )
+fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(len(pos_gridsss[0]) * scale, len(pos_gridsss) * scale), constrained_layout=True, squeeze=False)
 
 for column_index in range(0, len(pos_gridsss[i])):
     pos_grids = pos_gridsss[0][column_index]
