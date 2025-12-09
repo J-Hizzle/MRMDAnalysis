@@ -87,10 +87,8 @@ subdomain_dimensionss = [(10.0, 20.0, 20.0),\
                          (30.0, 30.0, 30.0),
                          (30.0, 30.0, 30.0)]
 
-interface_areas = [subdomain_dimensions[1] * subdomain_dimensions[2] for subdomain_dimensions in subdomain_dimensionss] # in sigma^2
-time_interval = 10000 * 0.002 # in tau
-conversion_factors = [np.sqrt(interface_area)/(interface_area * time_interval) for interface_area in interface_areas]
-
+#conversion_factors = [np.sqrt(interface_area)/(interface_area * time_interval) for interface_area in interface_areas]
+conversion_factors = [3/2, 1, 1, 1]
 x_inters =  [5.0, 5.0, 25.0, 25.0]
 
 path_read = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
@@ -139,12 +137,14 @@ for i, file_bases in enumerate(file_basess_flux_distribution):
 
     for j, file_base in enumerate(file_bases):
         file_read = path_parent / file_base
-        fluxes = read_mrmd_out(file_read, usecols=(9))
-        N_grid = np.arange(np.min(fluxes), np.max(fluxes), 2)
+        fluxes = read_mrmd_out(file_read, usecols=(9)) 
+        N_grid = np.arange(np.min(fluxes), np.max(fluxes), 5)
         fluxHist = np.histogram(fluxes, N_grid, density=True)
 
         N_grids.append((N_grid[:-1] + 0.5 * (N_grid[1] - N_grid[0])) * conversion_factors[j])
         flux_distributions.append(fluxHist[0]/conversion_factors[j])
+        #N_grids.append((N_grid[:-1] + 0.5 * (N_grid[1] - N_grid[0])))
+        #flux_distributions.append(fluxHist[0])
 
     N_gridss.append(N_grids)
     flux_distributionss.append(flux_distributions)
@@ -178,8 +178,8 @@ legend_loc = (0.8, 0.85)
 
 x_labelss = []
 y_labelss = []
-y_label_types = [r'$f_{\mathrm{M}}(p; x_{\mathrm{AT}/\Delta})$ in $\tau/(M\sigma)$', r'$P(J)/\sqrt{A}$ in $\sigma \tau$', r'$F_{\mathrm{av}}^x(x_{\mathrm{AT}/\Delta} - x)$ in $\epsilon/\sigma$']
-x_label_types = [r'$p$ in $M\sigma/\tau$', r'$J \cdot \sqrt{A}$ in $1/(\sigma \tau)$', r'$x - x_{\mathrm{AT}/\Delta}$ in $\sigma$']
+y_label_types = [r'$f_{\mathrm{M}}(p; x_{\mathrm{AT}/\Delta})$ in $\tau/(M\sigma)$', r'$P(c)$ in $1$', r'$F_{\mathrm{av}}^x(x_{\mathrm{AT}/\Delta} - x)$ in $\epsilon/\sigma$']
+x_label_types = [r'$p$ in $M\sigma/\tau$', r'$c$ in $1$', r'$x - x_{\mathrm{AT}/\Delta}$ in $\sigma$']
 for i, pos_gridss in enumerate(pos_gridsss):
     x_labels = []
     y_labels = []
@@ -192,10 +192,10 @@ for i, pos_gridss in enumerate(pos_gridsss):
     x_labelss.append(x_labels)
     y_labelss.append(y_labels)
 
-x_lims_types = [[0.0, 10.0], [-0.15, 0.15], [-2.5, 2.5]]
+x_lims_types = [[0.0, 10.0], [-70, 70], [-2.5, 2.5]]
 x_limsss = [[x_lims_types[i] for j in range(len(pos_gridss))] for i, pos_gridss in enumerate(pos_gridsss)]
 
-y_lims_types = [[0.0, 0.5], [0.0, 16.0], [-2.0, 1.6]]
+y_lims_types = [[0.0, 0.5], [0.0, 0.025], [-2.0, 1.6]]
 y_limsss = [[y_lims_types[i] for j in range(len(pos_gridss))] for i, pos_gridss in enumerate(pos_gridsss)]
 
 data_labels = ["AdResS (minimal)",\
@@ -265,7 +265,7 @@ for column_index in range(0, len(pos_gridsss[1])):
 
     plt.sca(ax[1, column_index])
     
-    plot_PofNs(pos_gridsss[1][column_index], data_profilesss[1][column_index], fig_title=None, colors=colors, x_lims=x_lims, y_lims=y_lims, data_labels=data_labels, legend=None, xlabel=x_label, ylabel=y_label, linestyles=linestyles)
+    plot_PofNs(pos_gridsss[1][column_index], data_profilesss[1][column_index], fig_title=None, colors=colors, x_lims=x_lims, y_lims=y_lims, data_labels=data_labels, legend=None, xlabel=x_label, ylabel=y_label, linestyles=linestyles, linewidth=0.75)
     
     plt.xlim(x_lims)
     plt.ylim(y_lims)
