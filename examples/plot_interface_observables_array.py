@@ -96,7 +96,7 @@ path_read = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolv
 file_plt = None
 format_plt = None
 
-out_base = "interface_observables_array_2025_11_21.svg"
+out_base = "interface_observables_array_2025_12_18.svg"
 #path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
 path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
 file_plt = path_out / '{0}'.format(out_base)
@@ -178,7 +178,7 @@ legend_loc = (0.8, 0.85)
 
 x_labelss = []
 y_labelss = []
-y_label_types = [r'$f_{\mathrm{M}}(p; x_{\mathrm{AT}/\Delta})$ in $\tau/(M\sigma)$', r'$P(c)$ in $1$', r'$F_{\mathrm{av}}^x(x_{\mathrm{AT}/\Delta} - x)$ in $\epsilon/\sigma$']
+y_label_types = [r'$f_{\mathrm{M}}$ in $\tau/(M\sigma)$', r'$P$ in $1$', r'$F_{\mathrm{av, sim}}^x$ in $\epsilon/\sigma$']
 x_label_types = [r'$p$ in $M\sigma/\tau$', r'$c$ in $1$', r'$x - x_{\mathrm{AT}/\Delta}$ in $\sigma$']
 for i, pos_gridss in enumerate(pos_gridsss):
     x_labels = []

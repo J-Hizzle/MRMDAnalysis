@@ -36,7 +36,7 @@ versions = ['AdresS (minimal)',\
             'AdresS (no AT)',\
             'AdResS (full)']
 
-path_parent = plb.Path("/srv/public/julianhille/project/mrmd/build/examples/TracerThermodynamicForce/equilibrateLangevin").resolve()
+path_parent = plb.Path("/srv/public/julianhille/project/mrmd/build_backup/examples/TracerThermodynamicForce/equilibrateLangevin").resolve()
 
 format_trj = 'H5MD'
 format_top = 'GRO'
@@ -81,62 +81,62 @@ path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve(
 file_plt = None
 format_plt = None
 
-out_base = "tf_apriori_array_2025_10_07.svg"
+out_base = "tf_apriori_array_2025_12_18.svg"
 file_plt = path_out / '{0}'.format(out_base)
 format_plt = 'SVG'
 # %%
-'''
-Calculate the a priori thermodynamic forces
-'''
-rdfss = []
-for i, file_bases in enumerate(file_basess):
-    rdfs = []
-    rdfs_eval = []
-    for j, file_base in enumerate(file_bases):
-        file_top = path_parent / '{0}.gro'.format(file_base)
-        file_trj = path_parent / '{0}.h5md'.format(file_base)
-    
-        rdf_lj_read = Rdf_lj_read(file_top, file_trj, format_top, format_trj, atom_group_1_name, atom_group_2_name, nbins, rdf_range, t_init, t_fin, t_step)
-        color = select_color_from_colormap(j/len(file_bases), 'plasma') 
-        rdfs.append(rdf_lj_read)
-    
-    rdf_lj_goldman = Rdf_lj_goldman(dens=densities[i], temp=temperatures[i])
-    rdf_lj_morsali = Rdf_lj_morsali(dens=densities[i], temp=temperatures[i])
-
-    rdfs.append(rdf_lj_goldman)
-    rdfs.append(rdf_lj_morsali)
-    rdfss.append(rdfs)
-
-rdfss_eval = []
-for i, rdfs in enumerate(rdfss):
-    rdfs_eval = []
-    for j, rdf in enumerate(rdfs):
-        rdf_eval = rdf.rdf_lj(r_grid)
-        rdfs_eval.append(rdf_eval)
-    rdfss_eval.append(rdfs_eval)
-
-for i, rdfs in enumerate(rdfss):
-    for j, rdf in enumerate(rdfs):
-        force_vals_av_initialGuess, _ = calc_av_force(x_grid_initialGuess[(x_grid_initialGuess >= app_min) & (x_grid_initialGuess <= app_max)], x_delta_TR_initialGuess, r_cut, densities[i], rdf.rdf_lj, pot_lj_shifted_cap.force_lj)
-
-        # fill in force values from initial guess
-        force_vals_initialGuess = np.zeros_like(x_grid_initialGuess)
-        force_vals_initialGuess[(x_grid_initialGuess >= app_min) & (x_grid_initialGuess <= app_max)] = force_vals_av_initialGuess
-        # symmetrize
-        x_grid_initTotal, indices = np.unique(np.concatenate([r_ref - np.flip(x_grid_initialGuess), r_ref + x_grid_initialGuess]), return_index=True)
-        force_vals_initTotal = np.concatenate([-np.flip(force_vals_initialGuess), force_vals_initialGuess])[indices]
-        #applied_force_vals_av = calc_applied_thermodynamic_force(x_grid_initTotal, force_vals_initTotal, 5.0, 0.0, 2.5)
-        #applied_pot_vals_av = calc_coupling_potential_from_thermodynamic_force(x_grid_initTotal, applied_force_vals_av, 0.0, 2.5)
-        applied_force_vals_av = calc_applied_thermodynamic_force(x_grid_initTotal, force_vals_initTotal, r_ref, app_min, x_delta_TR_initialGuess)
-        applied_pot_vals_av = calc_coupling_potential_from_thermodynamic_force(x_grid_initTotal, applied_force_vals_av, r_ref, app_min)
-        # interpolate 
-        x_grid_interp = np.arange(0.0, 2.0 * r_ref, forceGridSpacing) + forceShift
-        applied_force_vals_av_interp = np.interp(x_grid_interp, x_grid_initTotal, applied_force_vals_av)
-
-        write_array = np.column_stack((x_grid_interp, applied_force_vals_av_interp)).T
-        savename = path_out / '{0}_{1}_2025_09_26.txt'.format(i, j)
-
-        np.savetxt(savename, write_array, fmt='%05.6e')
+#'''
+#Calculate the a priori thermodynamic forces
+#'''
+#rdfss = []
+#for i, file_bases in enumerate(file_basess):
+#    rdfs = []
+#    rdfs_eval = []
+#    for j, file_base in enumerate(file_bases):
+#        file_top = path_parent / '{0}.gro'.format(file_base)
+#        file_trj = path_parent / '{0}.h5md'.format(file_base)
+#    
+#        rdf_lj_read = Rdf_lj_read(file_top, file_trj, format_top, format_trj, atom_group_1_name, atom_group_2_name, nbins, rdf_range, t_init, t_fin, t_step)
+#        color = select_color_from_colormap(j/len(file_bases), 'plasma') 
+#        rdfs.append(rdf_lj_read)
+#    
+#    rdf_lj_goldman = Rdf_lj_goldman(dens=densities[i], temp=temperatures[i])
+#    rdf_lj_morsali = Rdf_lj_morsali(dens=densities[i], temp=temperatures[i])
+#
+#    rdfs.append(rdf_lj_goldman)
+#    rdfs.append(rdf_lj_morsali)
+#    rdfss.append(rdfs)
+#
+#rdfss_eval = []
+#for i, rdfs in enumerate(rdfss):
+#    rdfs_eval = []
+#    for j, rdf in enumerate(rdfs):
+#        rdf_eval = rdf.rdf_lj(r_grid)
+#        rdfs_eval.append(rdf_eval)
+#    rdfss_eval.append(rdfs_eval)
+#
+#for i, rdfs in enumerate(rdfss):
+#    for j, rdf in enumerate(rdfs):
+#        force_vals_av_initialGuess, _ = calc_av_force(x_grid_initialGuess[(x_grid_initialGuess >= app_min) & (x_grid_initialGuess <= app_max)], x_delta_TR_initialGuess, r_cut, densities[i], rdf.rdf_lj, pot_lj_shifted_cap.force_lj)
+#
+#        # fill in force values from initial guess
+#        force_vals_initialGuess = np.zeros_like(x_grid_initialGuess)
+#        force_vals_initialGuess[(x_grid_initialGuess >= app_min) & (x_grid_initialGuess <= app_max)] = force_vals_av_initialGuess
+#        # symmetrize
+#        x_grid_initTotal, indices = np.unique(np.concatenate([r_ref - np.flip(x_grid_initialGuess), r_ref + x_grid_initialGuess]), return_index=True)
+#        force_vals_initTotal = np.concatenate([-np.flip(force_vals_initialGuess), force_vals_initialGuess])[indices]
+#        #applied_force_vals_av = calc_applied_thermodynamic_force(x_grid_initTotal, force_vals_initTotal, 5.0, 0.0, 2.5)
+#        #applied_pot_vals_av = calc_coupling_potential_from_thermodynamic_force(x_grid_initTotal, applied_force_vals_av, 0.0, 2.5)
+#        applied_force_vals_av = calc_applied_thermodynamic_force(x_grid_initTotal, force_vals_initTotal, r_ref, app_min, x_delta_TR_initialGuess)
+#        applied_pot_vals_av = calc_coupling_potential_from_thermodynamic_force(x_grid_initTotal, applied_force_vals_av, r_ref, app_min)
+#        # interpolate 
+#        x_grid_interp = np.arange(0.0, 2.0 * r_ref, forceGridSpacing) + forceShift
+#        applied_force_vals_av_interp = np.interp(x_grid_interp, x_grid_initTotal, applied_force_vals_av)
+#
+#        write_array = np.column_stack((x_grid_interp, applied_force_vals_av_interp)).T
+#        savename = path_out / '{0}_{1}_2025_09_26.txt'.format(i, j)
+#
+#        np.savetxt(savename, write_array, fmt='%05.6e')
 # %%
 x_gridss_interp = []
 tf_profiless = []
@@ -160,7 +160,7 @@ legend_loc = (0.85, 0.15)
 
 x_labelss = []
 y_labelss = []
-y_label_types = [r'$F_{\mathrm{av}}^x(x_{\Delta/\mathrm{TR}} - x)$ in $\epsilon/\sigma$']
+y_label_types = [r'$F_{\mathrm{av}}^x$ in $\epsilon/\sigma$']
 
 for i, pos_gridss in enumerate(pos_gridsss):
     x_labels = []
