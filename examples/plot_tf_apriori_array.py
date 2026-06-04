@@ -32,11 +32,7 @@ temperatures = [1.5,\
                 1.5,\
                 2.0]
 
-versions = ['AdresS (minimal)',\
-            'AdresS (no AT)',\
-            'AdResS (full)']
-
-path_parent = plb.Path("/srv/public/julianhille/project/mrmd/build_backup/examples/TracerThermodynamicForce/equilibrateLangevin").resolve()
+path_parent = plb.Path("/media/julianhille/T7 Shield/backups_noATPaper_2026_04_29/equilibrateLangevin").resolve()
 
 format_trj = 'H5MD'
 format_top = 'GRO'
@@ -81,7 +77,7 @@ path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve(
 file_plt = None
 format_plt = None
 
-out_base = "tf_apriori_array_2025_12_18.svg"
+out_base = "tf_apriori_array_2026_04_29.svg"
 file_plt = path_out / '{0}'.format(out_base)
 format_plt = 'SVG'
 # %%
@@ -185,7 +181,7 @@ y_limsss = [[y_lims_types[i] for j in range(len(pos_gridss))] for i, pos_gridss 
 
 data_labels = ["EQ (minimal)",\
                "EQ (no AT)",\
-               "EQ (full)",\
+               "EQ (complete)",\
                "Goldman",\
                "Morsali"]
 
