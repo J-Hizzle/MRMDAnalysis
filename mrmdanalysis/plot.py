@@ -52,7 +52,7 @@ def plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_l
         else:
             plt.savefig(fname=file_plt, dpi=150, format=format_plt)
 
-def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, colors, y_lims, x_label=None, y_label=None, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
+def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, colors, x_lims, y_lims, x_label=None, y_label=None, data_labels=None, legend=None, fig_title=None, file_plt=None, format_plt=None, linestyles=None):
     '''
     Plot a data profile (e.g. density or thermodynamic force) in an AdResS simulation box.
     
@@ -115,9 +115,10 @@ def plot_profile_in_adress_box(pos_grids, data_valss, r_ref, r_min, r_max, color
     plt.text(0.0, textheight, r'AT', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.text(r_min + (r_max - r_min)/2, textheight, r'$\Delta$', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.text(-r_min - (r_max - r_min)/2, textheight, r'$\Delta$', fontsize=18, horizontalalignment='center', verticalalignment='center')
-    plt.text(r_max + r_min, textheight, r'TR', fontsize=18, horizontalalignment='center', verticalalignment='center')
-    plt.text(-r_max - r_min, textheight, r'TR', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.text(r_max + (r_max - r_min)/2, textheight, r'TR', fontsize=18, horizontalalignment='center', verticalalignment='center')
+    plt.text(-r_max - (r_max - r_min)/2, textheight, r'TR', fontsize=18, horizontalalignment='center', verticalalignment='center')
     plt.ylim(y_lims[0], y_lims[1])
+    plt.xlim(x_lims[0], x_lims[1])
 
     if file_plt:
         if os.path.isfile(file_plt):
