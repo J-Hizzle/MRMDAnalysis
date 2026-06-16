@@ -1,6 +1,11 @@
 # %%
 import numpy as np
 from scipy import integrate
+from scipy.interpolate import interp1d
+# %%
+def calc_thermodynamic_force_on_grid(x_grid_dst, x_grid_src, force_vals):
+    force_interp = interp1d(x_grid_src, force_vals, kind='linear', fill_value=0, bounds_error=False)
+    return force_interp(x_grid_dst)
 # %%
 def calc_coupling_potential_from_thermodynamic_force(x_grid, force_vals, r_ref, r_min):
     pot_vals = -integrate.cumulative_simpson(force_vals, x=x_grid, initial=0)
