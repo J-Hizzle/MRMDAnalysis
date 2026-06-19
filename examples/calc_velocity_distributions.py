@@ -5,18 +5,18 @@ import numpy as np
 
 from mrmdanalysis.statistics import count_velocities
 # %%
-file_basess = [["tracerProduction_rho296_T15_x10_yz20_2026_06_11",
-                "tracerProduction_rho296_T15_x10_yz30_2026_06_11",
-                "tracerProduction_rho296_T15_x30_yz30_2026_06_11",
-                "atomisticProduction_rho296_T15_x30_yz30_2026_06_11"],
-               ["tracerProduction_rho370_T15_x10_yz20_2026_06_11",
-                "tracerProduction_rho370_T15_x10_yz30_2026_06_11",
-                "tracerProduction_rho370_T15_x30_yz30_2026_06_11",
-                "atomisticProduction_rho370_T15_x30_yz30_2026_06_12"],
-               ["tracerProduction_rho370_T20_x10_yz20_2026_06_11",
-                "tracerProduction_rho370_T20_x10_yz30_2026_06_11",
-                "tracerProduction_rho370_T20_x30_yz30_2026_06_11",
-                "atomisticProduction_rho370_T20_x30_yz30_2026_06_12"]]
+file_basess = [["tracerProduction_rho296_T15_x10_yz20_2026_06_17",
+                "tracerProduction_rho296_T15_x10_yz30_2026_06_17",
+                "tracerProduction_rho296_T15_x30_yz30_2026_06_17",
+                "atomisticProduction_rho296_T15_x30_yz30_2026_06_17"],
+               ["tracerProduction_rho370_T15_x10_yz20_2026_06_17",
+                "tracerProduction_rho370_T15_x10_yz30_2026_06_17",
+                "tracerProduction_rho370_T15_x30_yz30_2026_06_17",
+                "atomisticProduction_rho370_T15_x30_yz30_2026_06_17"],
+               ["tracerProduction_rho370_T20_x10_yz20_2026_06_17",
+                "tracerProduction_rho370_T20_x10_yz30_2026_06_17",
+                "tracerProduction_rho370_T20_x30_yz30_2026_06_17",
+                "atomisticProduction_rho370_T20_x30_yz30_2026_06_17"]]
 
 paths_parent = [plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/noATsimulations_2026_06_10/rho296_T15_2026_06_10').resolve(),\
                 plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/noATsimulations_2026_06_10/rho370_T15_2026_06_10').resolve(),\
