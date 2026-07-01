@@ -61,8 +61,6 @@ frame_freq = 1
 ylims = [-1.5, 1.5]
 xlims = [-2.5, 0.2]
 fontsize = 8
-
-file_out = None
 # %%
 for i, file_bases in enumerate(file_basess):
     path_parent = paths_parent[i]
