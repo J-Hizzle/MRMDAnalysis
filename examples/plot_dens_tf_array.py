@@ -2,35 +2,27 @@
 import pathlib as plb
 from mrmdanalysis.plot import plot_profile_array_in_adress_box, select_color_from_colormap
 from mrmdanalysis.read import read_data_on_grid
-from mrmdanalysis.util import calc_coupling_potential_from_thermodynamic_force, calc_applied_thermodynamic_force, calc_thermodynamic_force_from_coupling_potential, cut_data_to_new_box
+from mrmdanalysis.util import calc_coupling_potential_from_thermodynamic_force, calc_applied_thermodynamic_force, calc_thermodynamic_force_from_coupling_potential, calc_thermodynamic_force_on_grid, cut_data_to_new_box
+import numpy as np
 # %%
-file_basess = [["thermoForce_NoAT_forceguess_n1184_23934454_2025_09_05",\
-              "thermoForce_NoAT_forceguess_n2664_23934479_2025_09_05",\
-              "thermoForce_NoAT_forceguess_n7992_23934480_2025_09_05",\
-              "thermoForce_NoAT_forceguess_n7992_23934480_2025_09_05"],\
-            ["thermoForce_NoAT_forceguess_n1480_23934399_2025_09_05",\
-              "thermoForce_NoAT_forceguess_n3330_23934400_2025_09_05",\
-              "thermoForce_NoAT_forceguess_n9990_23934452_2025_09_05",\
-              "thermoForce_NoAT_forceguess_n9990_23934452_2025_09_05"],
-            ["thermoForce_forceguess_n1480_T20_24016076_2025_09_22",\
-              "thermoForce_forceguess_n3330_T20_24016073_2025_09_22",\
-              "thermoForce_forceguess_n9990_T20_24016070_2025_09_22",\
-              "thermoForce_forceguess_n9990_T20_24016070_2025_09_22"]]
+file_basess = [["thermodynamicForce_initialGuess_rho296_T15_x10_yz20_2026_06_10",
+                "thermodynamicForce_initialGuess_rho296_T15_x10_yz30_2026_06_10",
+                "thermodynamicForce_initialGuess_rho296_T15_x30_yz30_2026_06_10",
+                "thermodynamicForce_initialGuess_rho296_T15_x30_yz30_2026_06_10"],
+               ["thermodynamicForce_initialGuess_rho370_T15_x10_yz20_2026_06_10",
+                "thermodynamicForce_initialGuess_rho370_T15_x10_yz30_2026_06_10",
+                "thermodynamicForce_initialGuess_rho370_T15_x30_yz30_2026_06_10",
+                "thermodynamicForce_initialGuess_rho370_T15_x30_yz30_2026_06_10"],
+               ["thermodynamicForce_initialGuess_rho370_T20_x10_yz20_2026_06_10",
+                "thermodynamicForce_initialGuess_rho370_T20_x10_yz30_2026_06_10",
+                "thermodynamicForce_initialGuess_rho370_T20_x30_yz30_2026_06_10",
+                "thermodynamicForce_initialGuess_rho370_T20_x30_yz30_2026_06_10"]]
 
-densities = [0.296,\
-             0.370,\
-             0.370]
+paths_data = [plb.Path("//media/julianhille/T7 Shield/noATsimulations_2026_06_10/rho296_T15_2026_06_10").resolve(),
+              plb.Path("//media/julianhille/T7 Shield/noATsimulations_2026_06_10/rho370_T15_2026_06_10").resolve(),
+              plb.Path("//media/julianhille/T7 Shield/noATsimulations_2026_06_10/rho370_T20_2026_06_10").resolve()]
 
-subdomain_dimensionss = [(10.0, 20.0, 20.0),\
-                        (10.0, 30.0, 30.0),\
-                        (30.0, 30.0, 30.0),
-                        (30.0, 30.0, 30.0)]
-
-paths_data = [plb.Path("/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho0296_2025_09_03").resolve(),\
-                plb.Path("/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho0370_2025_09_03").resolve(),\
-                plb.Path("/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho0370_T20_2025_09_19").resolve()]
-
-iterations = [-1, -1, -1, 0]
+iterations = [7, 7, 7, 0]
 cuts_to_new_box = [False, False, True, True]
 
 r_ref_base = 5.0
@@ -48,12 +40,10 @@ app_maxs = [4.5, 4.5, 14.5, 14.5]
 file_plt = None
 format_plt = None
 
-out_base = "dens_tf_array_2025_10_07.svg"
-#path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
-path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
-
-file_plt = path_out / '{0}'.format(out_base)
-format_plt = 'SVG'
+#out_base = "dens_tf_array_2026_06_22.svg"
+#path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
+#file_plt = path_out / '{0}'.format(out_base)
+#format_plt = 'SVG'
 # %%
 dens_gridss = []
 dens_profiless = []
@@ -89,8 +79,10 @@ for i, file_bases in enumerate(file_basess):
             dens_grid, dens_profile = cut_data_to_new_box(dens_grid, dens_profile, r_refs[j], app_mins[j], app_maxs[j] + 0.5, r_ref_base, app_min_base, app_max_base + 0.5)
             tf_grid, tf_profile = cut_data_to_new_box(tf_grid, tf_profile, r_refs[j], app_mins[j], app_maxs[j], r_ref_base, app_min_base, app_max_base)
 
-        pot_grid = tf_grid
-        pot_profile = calc_coupling_potential_from_thermodynamic_force(pot_grid, tf_profile, r_ref_base, r_min_base)
+        pot_grid = np.linspace(0, r_ref_base * 2, len(tf_grid) * 100)
+        pot_grid += (pot_grid[1] - pot_grid[0]) / 2
+        tf_interp = calc_thermodynamic_force_on_grid(pot_grid, tf_grid, tf_profile)
+        pot_profile = calc_coupling_potential_from_thermodynamic_force(pot_grid, tf_interp, r_ref_base, r_min_base)
 
         if j != len(file_bases) - 1:
             dens_grids.append(dens_grid)
@@ -139,12 +131,8 @@ y_limsss = [[y_lims_types[i] for j in range(len(pos_gridss))] for i, pos_gridss 
 
 data_labels = ["AdResS (minimal)",\
                "AdResS (no AT)",\
-               "AdResS (full)",\
-               "Goldman"]
-
-axis_titles = [r'$\rho = \SI{0.296}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\mathrm{B}}}$',\
-               r'$\rho = \SI{0.370}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\mathrm{B}}}$',\
-               r'$\rho = \SI{0.370}{\sigma^{-3}}$, $T = \SI{2.0}{\epsilon/k_{\mathrm{B}}}$']
+               "AdResS (complete)",\
+               "initial guess"]
 
 colors = [select_color_from_colormap(range_indicator/(len(dens_grids)) / 2, 'plasma') for range_indicator in range(len(dens_grids))]
 colors.append('red')
@@ -152,5 +140,5 @@ linestyles = ['--', '-.', ':', '-']
 
 scale = 5
 # %%
-plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref_base, r_min_base, r_max_base, linestyles=linestyles, axis_titles=axis_titles, file_plt=file_plt, format_plt=format_plt, legend_loc=legend_loc, scale=scale)
+plot_profile_array_in_adress_box(pos_gridsss, data_profilesss, x_limsss, y_limsss, x_labelss, y_labelss, data_labels, colors, r_ref_base, r_min_base, r_max_base, linestyles=linestyles, file_plt=file_plt, format_plt=format_plt, legend_loc=legend_loc, scale=scale)
 # %%
