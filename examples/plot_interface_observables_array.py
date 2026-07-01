@@ -16,46 +16,46 @@ from mrmdanalysis.plot import select_color_from_colormap, plot_profile_at_interf
 from mrmdanalysis.read import read_mrmd_out
 from mrmdanalysis.statistics import count_velocities
 # %%
-file_basess_velocity_distribution = [["tracerProduction_23945721_2025_09_09",\
-                "tracerProduction_23945722_2025_09_09",\
-                "tracerProduction_23945723_2025_09_09",\
-                "atomisticProduction_23945366_2025_09_09"],\
-               ["tracerProduction_23945717_2025_09_09",\
-                "tracerProduction_23945715_2025_09_09",\
-                "tracerProduction_23945712_2025_09_09",\
-                "atomisticProduction_23945334_2025_09_09"],\
-               ["tracerProduction_n1480_T20_24019714_2025_09_23",\
-                "tracerProduction_n3330_T20_24019715_2025_09_23",\
-                "tracerProduction_n9990_T20_24019724_2025_09_23",\
-                "atomisticProduction_24019672_2025_09_23"]]
-file_basess_flux_distribution = [["tracerProduction_23945721_2025_09_09/slurm-23945721.out",\
-                "tracerProduction_23945722_2025_09_09/slurm-23945722.out",\
-                "tracerProduction_23945723_2025_09_09/slurm-23945723.out",\
-                "atomisticProduction_23945366_2025_09_09/slurm-23945366.out"],\
-                ["tracerProduction_23945717_2025_09_09/slurm-23945717.out",\
-                "tracerProduction_23945715_2025_09_09/slurm-23945715.out",\
-                "tracerProduction_23945712_2025_09_09/slurm-23945712.out",\
-                "atomisticProduction_23945334_2025_09_09/slurm-23945334.out"],\
-                ["tracerProduction_n1480_T20_24019714_2025_09_23/slurm-24019714.out",\
-                "tracerProduction_n3330_T20_24019715_2025_09_23/slurm-24019715.out",\
-                "tracerProduction_n9990_T20_24019724_2025_09_23/slurm-24019724.out",\
-                "atomisticProduction_24019672_2025_09_23/slurm-24019672.out"]]
-file_basess_Fav = [["tracerProduction_23945721_2025_09_09",\
-                "tracerProduction_23945722_2025_09_09",\
-                "tracerProduction_23945723_2025_09_09",\
-                "atomisticProduction_23945366_2025_09_09"],\
-                ["tracerProduction_23945717_2025_09_09",\
-                "tracerProduction_23945715_2025_09_09",\
-                "tracerProduction_23945712_2025_09_09",\
-                "atomisticProduction_23945334_2025_09_09"],\
-                ["tracerProduction_n1480_T20_24019714_2025_09_23",\
-                "tracerProduction_n3330_T20_24019715_2025_09_23",\
-                "tracerProduction_n9990_T20_24019724_2025_09_23",\
-                "atomisticProduction_24019672_2025_09_23"]]
+file_basess_velocity_distribution = [["tracerProduction_rho296_T15_x10_yz20_2026_06_17",
+                                      "tracerProduction_rho296_T15_x10_yz30_2026_06_17",
+                                      "tracerProduction_rho296_T15_x30_yz30_2026_06_17",
+                                      "atomisticProduction_rho296_T15_x30_yz30_2026_06_17"],
+                                     ["tracerProduction_rho370_T15_x10_yz20_2026_06_17",
+                                      "tracerProduction_rho370_T15_x10_yz30_2026_06_17",
+                                      "tracerProduction_rho370_T15_x30_yz30_2026_06_17",
+                                      "atomisticProduction_rho370_T15_x30_yz30_2026_06_17"],
+                                     ["tracerProduction_rho370_T20_x10_yz20_2026_06_17",
+                                      "tracerProduction_rho370_T20_x10_yz30_2026_06_17",
+                                      "tracerProduction_rho370_T20_x30_yz30_2026_06_17",
+                                      "atomisticProduction_rho370_T20_x30_yz30_2026_06_17"]]
+file_basess_flux_distribution = [["tracerProduction_rho296_T15_x10_yz20_2026_06_17",
+                "tracerProduction_rho296_T15_x10_yz30_2026_06_17",
+                "tracerProduction_rho296_T15_x30_yz30_2026_06_17",
+                "atomisticProduction_rho296_T15_x30_yz30_2026_06_17"],
+               ["tracerProduction_rho370_T15_x10_yz20_2026_06_17",
+                "tracerProduction_rho370_T15_x10_yz30_2026_06_17",
+                "tracerProduction_rho370_T15_x30_yz30_2026_06_17",
+                "atomisticProduction_rho370_T15_x30_yz30_2026_06_17"],
+               ["tracerProduction_rho370_T20_x10_yz20_2026_06_17",
+                "tracerProduction_rho370_T20_x10_yz30_2026_06_17",
+                "tracerProduction_rho370_T20_x30_yz30_2026_06_17",
+                "atomisticProduction_rho370_T20_x30_yz30_2026_06_17"]]
+file_basess_Fav = [["tracerProduction_rho296_T15_x10_yz20_2026_06_17",
+                "tracerProduction_rho296_T15_x10_yz30_2026_06_17",
+                "tracerProduction_rho296_T15_x30_yz30_2026_06_17",
+                "atomisticProduction_rho296_T15_x30_yz30_2026_06_17"],
+               ["tracerProduction_rho370_T15_x10_yz20_2026_06_17",
+                "tracerProduction_rho370_T15_x10_yz30_2026_06_17",
+                "tracerProduction_rho370_T15_x30_yz30_2026_06_17",
+                "atomisticProduction_rho370_T15_x30_yz30_2026_06_17"],
+               ["tracerProduction_rho370_T20_x10_yz20_2026_06_17",
+                "tracerProduction_rho370_T20_x10_yz30_2026_06_17",
+                "tracerProduction_rho370_T20_x30_yz30_2026_06_17",
+                "atomisticProduction_rho370_T20_x30_yz30_2026_06_17"]]
 
-paths_parent = [plb.Path('/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho0296_2025_09_03').resolve(),\
-                plb.Path('/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho0370_2025_09_03').resolve(),\
-                plb.Path('/media/julianhille/T7 Shield/backups_unpacked/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/rho0370_T20_2025_09_19').resolve()]
+paths_parent = [plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/noATsimulations_2026_06_10/rho296_T15_2026_06_10').resolve(),\
+                plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/noATsimulations_2026_06_10/rho370_T15_2026_06_10').resolve(),\
+                plb.Path('/home/mi/julianhille/mounted_directories/curta/project/mrmd_simulations/noATsimulations_2026_06_10/rho370_T20_2026_06_10').resolve()]
 
 format_trj = 'H5MD'
 format_top = 'GRO'
@@ -91,16 +91,13 @@ subdomain_dimensionss = [(10.0, 20.0, 20.0),\
 conversion_factors = [3/2, 1, 1, 1]
 x_inters =  [5.0, 5.0, 25.0, 25.0]
 
-path_read = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
-
 file_plt = None
 format_plt = None
 
-out_base = "interface_observables_array_2025_12_18.svg"
-#path_out = plb.Path('/srv/public/julianhille/project/MRMDAnalysis/data').resolve()
-path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
-file_plt = path_out / '{0}'.format(out_base)
-format_plt = 'SVG'
+#out_base = "interface_observables_array_2026_06_22.svg"
+#path_out = plb.Path('/srv/public/julianhille/publications/paper_noAT/').resolve()
+#file_plt = path_out / '{0}'.format(out_base)
+#format_plt = 'SVG'
 # %%
 '''
 Read velocity distributions
@@ -114,7 +111,7 @@ for i, file_bases in enumerate(file_basess_velocity_distribution):
     path_parent = paths_parent[i]
 
     for j, file_base in enumerate(file_bases):
-        file_read = path_read / 'velocity_distribution_{0}_{1}_2025_09_30.txt'.format(i, j)
+        file_read = path_parent / file_base / '{0}_velocityDistribution.txt'.format(file_base)
         velocity_bin_grid, velocity_distribution = np.loadtxt(file_read, dtype=float, delimiter=" ")
 
         velocity_bin_grids.append(velocity_bin_grid)
@@ -136,15 +133,13 @@ for i, file_bases in enumerate(file_basess_flux_distribution):
     path_parent = paths_parent[i]
 
     for j, file_base in enumerate(file_bases):
-        file_read = path_parent / file_base
-        fluxes = read_mrmd_out(file_read, usecols=(9)) 
+        file_read = path_parent / file_base / "{0}.out".format(file_base)
+        fluxes = read_mrmd_out(file_read, usecols=(8)) 
         N_grid = np.arange(np.min(fluxes), np.max(fluxes), 5)
         fluxHist = np.histogram(fluxes, N_grid, density=True)
 
         N_grids.append((N_grid[:-1] + 0.5 * (N_grid[1] - N_grid[0])) * conversion_factors[j])
         flux_distributions.append(fluxHist[0]/conversion_factors[j])
-        #N_grids.append((N_grid[:-1] + 0.5 * (N_grid[1] - N_grid[0])))
-        #flux_distributions.append(fluxHist[0])
 
     N_gridss.append(N_grids)
     flux_distributionss.append(flux_distributions)
@@ -210,7 +205,6 @@ linestyles = ['--', '-.', ':', '-']
 axis_titles = [r'$\rho = \SI{0.296}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\mathrm{B}}}$',\
                r'$\rho = \SI{0.370}{\sigma^{-3}}$, $T = \SI{1.5}{\epsilon/k_{\mathrm{B}}}$',\
                r'$\rho = \SI{0.370}{\sigma^{-3}}$, $T = \SI{2.0}{\epsilon/k_{\mathrm{B}}}$']
-#axis_titles = ["a", "b", "c"]
 scale = 5
 # %%
 fig, ax = plt.subplots(len(pos_gridsss), len(pos_gridsss[0]), figsize=(len(pos_gridsss[0]) * scale, len(pos_gridsss) * scale), constrained_layout=True, squeeze=False)
