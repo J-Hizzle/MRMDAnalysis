@@ -28,4 +28,8 @@ hist_NVT = np.histogram(data_NVT, N_grid_NVT, density=True)
 plt.plot(N_grid_NVE[:-1], hist_NVE[0], drawstyle='steps-mid', label='NVE')
 plt.plot(N_grid_NVT[:-1], hist_NVT[0], drawstyle='steps-mid', label='NVT')
 plt.legend()
+plt.xlabel(r'$N$')
+plt.ylabel(r'$P(N)$')
+plt.title(r'2-sided Kinetic Chemostat connected to ideal gas')
+plt.savefig('data/PofN_fluxBoundary_2026_07_06.png', dpi=300, format='png')
 # %%
